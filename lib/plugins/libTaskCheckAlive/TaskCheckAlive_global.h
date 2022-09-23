@@ -1,0 +1,12 @@
+#ifndef CHECKALIVE_GLOBAL_H
+#define CHECKALIVE_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(CHECKALIVE_LIBRARY)
+#  define CHECKALIVE_EXPORT Q_DECL_EXPORT
+#else
+#  define CHECKALIVE_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // CHECKALIVE_GLOBAL_H

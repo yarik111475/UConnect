@@ -1,0 +1,12 @@
+#ifndef UPDATEAGENT_GLOBAL_H
+#define UPDATEAGENT_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(UPDATEAGENT_LIBRARY)
+#  define UPDATEAGENT_EXPORT Q_DECL_EXPORT
+#else
+#  define UPDATEAGENT_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // UPDATEAGENT_GLOBAL_H

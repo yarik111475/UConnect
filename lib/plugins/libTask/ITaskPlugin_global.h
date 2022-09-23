@@ -1,0 +1,12 @@
+#ifndef ITASKPLUGIN_GLOBAL_H
+#define ITASKPLUGIN_GLOBAL_H
+
+#include <QtGlobal>
+
+#if defined(ITASKPLUGIN_LIBRARY)
+#  define ITASKPLUGIN_EXPORT Q_DECL_EXPORT
+#else
+#  define ITASKPLUGIN_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // ITASKPLUGIN_GLOBAL_H

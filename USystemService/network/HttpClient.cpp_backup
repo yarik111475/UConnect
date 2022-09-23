@@ -1,0 +1,218 @@
+#include <map>
+#include <QFile>
+#include <QSslKey>
+#include <QUrlQuery>
+#include <QEventLoop>
+#include <QJsonObject>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QNetworkAccessManager>
+
+#include "HttpClient.h"
+
+    HttpClient::HttpClient(const QUrl &hostUrl, const QString &appDirPath, QObject *parent)
+        :QObject{parent},_hostUrl{hostUrl},_appDirPath{appDirPath}
+    {
+        _accessManagerPtr.reset(new QNetworkAccessManager());
+        _accessManagerPtr->setTransferTimeout(1000 * 60 * 5);
+        QObject::connect(_accessManagerPtr.get(),&QNetworkAccessManager::sslErrors,
+                         this, &HttpClient::slotSslErrors);
+    }
+
+    bool HttpClient::initSslConfiguration()
+    {
+        bool ok {false};
+        const QString certDir {"cert"};
+        const QString caFileName {"cacert.pem"};
+        const QString keyFileName {"clientPrivateKey.pem"};
+        const QString certFileName {"clientCert.pem"};
+        try{
+            _sslConfigurationPtr.reset(new QSslConfiguration(QSslConfiguration::defaultConfiguration()));
+            _sslConfigurationPtr->setProtocol(QSsl::AnyProtocol);
+            _sslConfigurationPtr->setPeerVerifyMode(QSslSocket::VerifyPeer);
+
+            //init certificates list
+            QFile fileCa(_appDirPath + "/" + certDir + "/" + caFileName);
+            if(fileCa.open(QIODevice::ReadOnly)){
+                QList<QSslCertificate> listOfCert=QSslCertificate::fromDevice(&fileCa);
+                _sslConfigurationPtr->setCaCertificates(listOfCert);
+            }
+            else{
+                ok=false;
+            }
+
+            //init private key
+            QFile fileKey(_appDirPath + "/" + certDir + "/" + keyFileName);
+            if(fileKey.open(QIODevice::ReadOnly)){
+                QSslKey key (&fileKey, QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey,QByteArray());
+                _sslConfigurationPtr->setPrivateKey(key);
+            }
+            else{
+                ok=false;
+            }
+
+            //init client certificates list
+            QFile fileCrt(_appDirPath + "/" + certDir + "/" + certFileName);
+            if(fileCrt.open(QIODevice::ReadOnly)){
+                QList<QSslCertificate> listOfCert=QSslCertificate::fromDevice(&fileCrt);
+                _sslConfigurationPtr->setLocalCertificateChain(listOfCert);
+            }
+            else{
+                ok=false;
+            }
+
+        }
+        catch(std::exception& ex){
+            //TODO log exception error here
+            ok=false;
+            _error=QString("HttpClientNetwork::initSslConfiguration() error, description: %1").arg(ex.what());
+        }
+        catch(...){
+            //TODO log common error here
+            ok=false;
+            _error="HttpClientNetwork::initSslConfiguration() unknown error";
+        }
+        return ok;
+    }
+
+    void HttpClient::makeHead(const QString &apiPath, const std::map<QString, QVariant> &queryMap)
+    {
+        try{
+            QUrl url(_hostUrl);
+            url.setPath(apiPath);
+
+            QUrlQuery query;
+            for(const auto& pair: queryMap){
+                query.addQueryItem(pair.first, pair.second.toString());
+            }
+            url.setQuery(query);
+
+            QNetworkRequest request(url);
+            request.setSslConfiguration(*_sslConfigurationPtr.data());
+            request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+            request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
+            request.setHeader(QNetworkRequest::UserAgentHeader, "UcAgent");
+
+            QEventLoop eventLoop;
+            QObject::connect(_accessManagerPtr.get(), &QNetworkAccessManager::finished ,&eventLoop,&QEventLoop::quit);
+            QNetworkReply* reply=_accessManagerPtr->head(request);
+            eventLoop.exec();
+
+            if(reply->error()!=QNetworkReply::NoError){
+                _error+=" " + reply->errorString();
+                return;
+            }
+
+            QList<QNetworkReply::RawHeaderPair> replyHeaders=reply->rawHeaderPairs();
+            if(!replyHeaders.empty() && replyHeaders.size() >=6){
+
+                _serverVersion=replyHeaders.at(5).second;
+                QString fileName=replyHeaders.at(6).second;
+                QList<QString> nameList=fileName.split(' ');
+
+                if(nameList.size()==2){
+                    QString fullInstallerName=nameList.at(1);
+                    QList<QString> splitInstallerNameList=fullInstallerName.replace("\"","").split('=');
+                    if(splitInstallerNameList.size()==2){
+                        _fileName=splitInstallerNameList.at(1);
+                        _result=true;
+                        return;
+                    }
+                }
+            }
+        }
+        catch(std::exception& ex){
+            //TODO log exception error here
+            _error=QString("HttpClientNetwork::makeHead() error, description: %1").arg(ex.what());
+            _result=false;
+        }
+        catch(...){
+            //TODO log common error here
+            _error="HttpClientNetwork::makeHead() unknown exception";
+            _result=false;
+        }
+        _error+=" HttpClientNetwork::makeHead() unknown error";
+        _result=false;
+    }
+
+    void HttpClient::makeGet(const QString &apiPath, const std::map<QString, QVariant> &queryMap)
+    {
+        try{
+            QUrl url(_hostUrl);
+            url.setPath(apiPath);
+
+            QUrlQuery query;
+            for(const auto& pair: queryMap){
+                query.addQueryItem(pair.first, pair.second.toString());
+            }
+            url.setQuery(query);
+
+            QNetworkRequest request(url);
+            request.setSslConfiguration(*_sslConfigurationPtr.data());
+            request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+            request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
+            request.setHeader(QNetworkRequest::UserAgentHeader, "UcAgent");
+
+            QEventLoop eventLoop;
+            QObject::connect(_accessManagerPtr.get(), &QNetworkAccessManager::finished ,&eventLoop,&QEventLoop::quit);
+            QNetworkReply* reply=_accessManagerPtr->get(request);
+            eventLoop.exec();
+
+            if(reply->error()!=QNetworkReply::NoError){
+                _error+=" " + reply->errorString();
+                return;
+            }
+
+            _fileData=reply->readAll();
+            _result=true;
+            return;
+        }
+        catch(std::exception& ex){
+            //TODO log exception error here
+            _error=QString("HttpClientNetwork::makeGet() error, description: %1").arg(ex.what());
+            _result=false;
+        }
+        catch(...){
+            //TODO log common error here
+            _error="HttpClientNetwork::makeGet() unknown exception";
+            _result=false;
+        }
+        _error="HttpClientNetwork::makeGet() unknown error";
+        _result=false;
+    }
+
+    QString HttpClient::getServerVersion() const
+    {
+        return _serverVersion;
+    }
+
+    QString HttpClient::getFileName() const
+    {
+        return _fileName;
+    }
+
+    QByteArray HttpClient::getFileData() const
+    {
+        return _fileData;
+    }
+
+    QString HttpClient::getError() const
+    {
+        return _error;
+    }
+
+    bool HttpClient::getResult() const
+    {
+        return _result;
+    }
+
+    void HttpClient::slotSslErrors(QNetworkReply *reply, const QList<QSslError> &errors)
+    {
+        try{
+            reply->ignoreSslErrors();
+        }
+        catch(...){
+            //TODO log ssl error here
+            _error="QNetworkReply""ignoreSslErrors() unknown exception";
+        }
+    }

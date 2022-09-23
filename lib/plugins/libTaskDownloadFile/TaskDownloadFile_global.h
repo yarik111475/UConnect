@@ -1,0 +1,12 @@
+#ifndef DOWNLOADFILE_GLOBAL_H
+#define DOWNLOADFILE_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(DOWNLOADFILE_LIBRARY)
+#  define DOWNLOADFILE_EXPORT Q_DECL_EXPORT
+#else
+#  define DOWNLOADFILE_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // DOWNLOADFILE_GLOBAL_H

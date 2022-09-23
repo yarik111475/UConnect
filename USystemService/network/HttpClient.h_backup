@@ -1,0 +1,48 @@
+#include <QUrl>
+#include <QObject>
+#include <QSslError>
+#include <QVariant>
+#include <QSharedPointer>
+
+class QNetworkReply;
+class QSslConfiguration;
+class QNetworkAccessManager;
+
+class HttpClient : public QObject {
+    Q_OBJECT
+
+public:
+    HttpClient(const QUrl& hostUrl, const QString& appDirPath, QObject* parent=nullptr);
+    bool initSslConfiguration();
+    void makeHead(const QString& apiPath, const std::map<QString, QVariant> &queryMap);
+    void makeGet(const QString& apiPath, const std::map<QString, QVariant> &queryMap);
+
+    QString getServerVersion()const;
+    QString getFileName()const;
+    QByteArray getFileData()const;
+
+    QString getError()const;
+    bool getResult()const;
+
+private:
+    QString  _error {};
+    bool     _result {false};
+    QUrl     _hostUrl {};
+    QString  _appDirPath {};
+
+    QString    _clientVersion {};
+    QString    _serverVersion {};
+    QByteArray _fileData {};
+    QString    _fileName {"downloaded.exe"};
+
+    QSharedPointer<QSslConfiguration>     _sslConfigurationPtr {nullptr};
+    QSharedPointer<QNetworkAccessManager> _accessManagerPtr {nullptr};
+
+
+
+private slots:
+    void slotSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+};
+
+
+
