@@ -13,7 +13,6 @@ if(WIN32)
         )
 endif()
 
-
 set(HEADERS
     TaskPlugin.h
     win/Wmi.h
@@ -43,7 +42,6 @@ target_link_libraries(TaskDisplayDeviceAudit
     Qt5::Core
     Qt5::Gui
     Qt5::Widgets
-    #Task
     spdlog
     ${WIN_API_LINK_OPTION}
     ${UNIX_LINK_OPTION}

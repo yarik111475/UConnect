@@ -45,6 +45,7 @@ add_library(qtservice STATIC
 target_link_libraries(qtservice PUBLIC
     Qt5::Core
     Qt5::Network
+    ${UNIX_LINK_OPTION}
     )
 
 target_compile_definitions(qtservice PRIVATE QTSERVICE_LIBRARY)

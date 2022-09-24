@@ -6,7 +6,13 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(OPENSSL_ROOT_DIR "C:/openssl_1_1_1k/1.1.1k/include")
+if(WIN32)
+    set(BUILD_TYPE STATIC)
+endif()
+
+if(UNIX)
+    set(BUILD_TYPE SHARED)
+endif()
 
 set(SOURCES
     IPv6Utility.cpp
@@ -86,14 +92,22 @@ set(HEADERS
     libsnmp.h
     )
 
-add_library(snmp++ SHARED
+find_package(OpenSSL REQUIRED)
+
+add_library(snmp++ ${BUILD_TYPE}
   ${SOURCES}
   ${HEADERS}
 )
 
 target_include_directories(snmp++
     PUBLIC
-    ${OPENSSL_ROOT_DIR}
+    ${OPENSSL_INCLUDE_DIR}
+    )
+
+target_link_libraries(snmp++ PUBLIC
+    OpenSSL::SSL
+    OpenSSL::Crypto
+    ${UNIX_LINK_OPTION}
     )
 
 target_compile_definitions(snmp++ PRIVATE SNMP_PP_WIN_LIBRARY)

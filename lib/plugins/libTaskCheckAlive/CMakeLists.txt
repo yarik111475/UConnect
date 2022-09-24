@@ -6,7 +6,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
 set(HEADERS
     TaskPlugin.h
     )
@@ -26,8 +25,6 @@ target_include_directories(TaskCheckAlive
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../libTask/
     )
-
-
 
 target_link_libraries(TaskCheckAlive
     PUBLIC
