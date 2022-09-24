@@ -32,7 +32,7 @@ target_include_directories(TaskCheckAlive
 target_link_libraries(TaskCheckAlive
     PUBLIC
     Qt5::Core
-    ${UC_STATIC_LINK_OPTION}
+    ${UNIX_LINK_OPTION}
     )
 
 target_compile_definitions(TaskCheckAlive PRIVATE LIBTOEXPORT)

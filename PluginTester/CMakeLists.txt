@@ -25,5 +25,6 @@ target_include_directories(PluginTester PRIVATE
 target_link_libraries(PluginTester PRIVATE
     Qt5::Core
     Qt5::Widgets
+    ${UNIX_LINK_OPTION}
     )
 

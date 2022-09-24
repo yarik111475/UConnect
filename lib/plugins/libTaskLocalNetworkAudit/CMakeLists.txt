@@ -39,14 +39,14 @@ target_include_directories(TaskLocalNetworkAudit
 if(WIN32)
     target_include_directories(TaskLocalNetworkAudit
         PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../Lib/snmp++_win
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../snmp++_win
         )
 endif()
 
 if(UNIX)
     target_include_directories(TaskLocalNetworkAudit
         PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../Lib/snmp++_unix
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../snmp++_unix
         )
 endif()
 
@@ -57,7 +57,7 @@ target_link_libraries(TaskLocalNetworkAudit
     OpenSSL::SSL
     OpenSSL::Crypto
     snmp++
-    ${UC_STATIC_LINK_OPTION}
+    ${UNIX_LINK_OPTION}
     )
 
 target_compile_definitions(TaskLocalNetworkAudit PRIVATE LIBTOEXPORT)

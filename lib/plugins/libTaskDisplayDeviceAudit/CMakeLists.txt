@@ -6,6 +6,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(WIN32)
+    set(WIN_API_LINK_OPTION
+        netapi32
+        wbemuuid
+        )
+endif()
+
 
 set(HEADERS
     TaskPlugin.h
@@ -38,9 +45,8 @@ target_link_libraries(TaskDisplayDeviceAudit
     Qt5::Widgets
     #Task
     spdlog
-    netapi32
-    wbemuuid
-    ${UC_STATIC_LINK_OPTION}
+    ${WIN_API_LINK_OPTION}
+    ${UNIX_LINK_OPTION}
     )
 
 target_compile_definitions(TaskDisplayDeviceAudit PRIVATE LIBTOEXPORT)

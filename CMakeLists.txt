@@ -20,6 +20,18 @@ if(WIN32)
     endif()
 endif()
 
+message("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set (UNIX_LINK_OPTION
+           -static-libgcc
+           -static-libstdc++
+           -pthread
+        )
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+endif()
+
 add_subdirectory(lib/spdlog)
 add_subdirectory(lib/plugins)
 add_subdirectory(lib/qtservice)

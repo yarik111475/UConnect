@@ -57,4 +57,5 @@ target_link_libraries(USystemAgent PRIVATE
     OpenSSL::Crypto
     qtservice
     spdlog
+    ${UNIX_LINK_OPTION}
     )

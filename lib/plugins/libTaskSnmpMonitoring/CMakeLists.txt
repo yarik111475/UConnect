@@ -50,7 +50,7 @@ target_link_libraries(TaskSnmpMonitoring
     OpenSSL::Crypto
     spdlog
     snmp++
-    ${UC_STATIC_LINK_OPTION}
+    ${UNIX_LINK_OPTION}
     )
 
 target_compile_definitions(TaskSnmpMonitoring PRIVATE LIBTOEXPORT)

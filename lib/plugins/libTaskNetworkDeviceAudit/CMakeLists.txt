@@ -38,7 +38,7 @@ target_link_libraries(TaskNetworkDeviceAudit
     PRIVATE
     Qt5::Core
     Qt5::Network
-    ${UC_STATIC_LINK_OPTION}
+    ${UNIX_LINK_OPTION}
     )
 
 target_compile_definitions(TaskNetworkDeviceAudit PRIVATE LIBTOEXPORT)

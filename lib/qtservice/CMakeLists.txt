@@ -27,9 +27,9 @@ endif()
 
 if(UNIX)
     set(SOURCES ${SOURCES}
-        qtunixsocket.h
+        qtunixsocket.cpp
         qtservice_unix.cpp
-        qtunixserversocket.h
+        qtunixserversocket.cpp
         )
     set(HEADERS ${HEADERS}
         qtunixsocket.h

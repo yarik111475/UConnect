@@ -86,7 +86,7 @@ set(HEADERS
     libsnmp.h
     )
 
-add_library(snmp++ STATIC
+add_library(snmp++ SHARED
   ${SOURCES}
   ${HEADERS}
 )

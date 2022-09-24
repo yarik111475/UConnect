@@ -49,4 +49,5 @@ target_link_libraries(USystemService PRIVATE
     Qt5::WebSockets
     qtservice
     spdlog
+    ${UNIX_LINK_OPTION}
     )
