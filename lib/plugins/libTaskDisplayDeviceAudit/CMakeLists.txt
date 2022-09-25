@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(WIN32)
-    set(WIN_API_LINK_OPTION
+    set(WIN_API_LIBS
         netapi32
         wbemuuid
         )
@@ -43,8 +43,8 @@ target_link_libraries(TaskDisplayDeviceAudit
     Qt5::Gui
     Qt5::Widgets
     spdlog
-    ${WIN_API_LINK_OPTION}
-    ${UNIX_LINK_OPTION}
+    ${WIN_API_LIBS}
+    ${UNIX_LIBS}
     )
 
 target_compile_definitions(TaskDisplayDeviceAudit PRIVATE LIBTOEXPORT)

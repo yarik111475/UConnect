@@ -20,10 +20,17 @@ if(WIN32)
     endif()
 endif()
 
+if(WIN32)
+    set(WIN_LIBS
+        ws2_32
+        user32
+        )
+endif()
+
 message("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 if (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set (UNIX_LINK_OPTION
+    set (UNIX_LIBS
            -static-libgcc
            -static-libstdc++
            -pthread

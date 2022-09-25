@@ -6,6 +6,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_definitions(-DQT_QTSERVICE_EXPORT)
+
 set(HEADERS
     qtservice.h
     qtservice_p.h
@@ -45,7 +47,8 @@ add_library(qtservice STATIC
 target_link_libraries(qtservice PUBLIC
     Qt5::Core
     Qt5::Network
-    ${UNIX_LINK_OPTION}
+    ${WIN_LIBS}
+    ${UNIX_LIBS}
     )
 
 target_compile_definitions(qtservice PRIVATE QTSERVICE_LIBRARY)

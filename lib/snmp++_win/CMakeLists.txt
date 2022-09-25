@@ -98,7 +98,8 @@ target_include_directories(snmp++
     )
 
 target_link_libraries(snmp++
-    ws2_32
+    ${UNIX_LIBS}
+    ${WIN_LIBS}
     )
 
 target_compile_definitions(snmp++ PRIVATE SNMP_PP_WIN_LIBRARY)

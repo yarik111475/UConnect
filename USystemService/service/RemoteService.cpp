@@ -132,8 +132,8 @@ void RemoteService::start()
     m_timer.start();
 }
 
-RemoteService::RemoteService(int argc, char **argv)
-    : QtService<QCoreApplication>(argc, argv, "USystemService")
+RemoteService::RemoteService(int argc, char **argv, const QString &service_name)
+    : QtService<QCoreApplication>(argc, argv, service_name)
 {
 }
 

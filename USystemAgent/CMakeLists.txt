@@ -6,6 +6,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_definitions(-DQT_QTSERVICE_IMPORT)
+
 find_package(OpenSSL REQUIRED)
 find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt5 COMPONENTS Network REQUIRED)
@@ -57,5 +59,6 @@ target_link_libraries(USystemAgent PRIVATE
     OpenSSL::Crypto
     qtservice
     spdlog
-    ${UNIX_LINK_OPTION}
+    ${WIN_LIBS}
+    ${UNIX_LIBS}
     )

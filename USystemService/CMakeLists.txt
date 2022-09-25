@@ -6,6 +6,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_definitions(-DQT_QTSERVICE_IMPORT)
+
 find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt5 COMPONENTS Network REQUIRED)
 find_package(Qt5 COMPONENTS WebSockets REQUIRED)
@@ -28,7 +30,6 @@ set(SOURCES
     network/WebsocketClient.cpp
     service/LocalService.cpp
     service/RemoteService.cpp
-
     tasks/TaskExecutor.cpp
     tasks/TaskQueue.cpp
     )
@@ -43,11 +44,13 @@ target_include_directories(USystemService PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../lib/qtservice
     )
 
-target_link_libraries(USystemService PRIVATE
+target_link_libraries(USystemService PUBLIC
     Qt5::Core
     Qt5::Network
     Qt5::WebSockets
+    user32
     qtservice
     spdlog
-    ${UNIX_LINK_OPTION}
+    ${WIN_LIBS}
+    ${UNIX_LIBS}
     )

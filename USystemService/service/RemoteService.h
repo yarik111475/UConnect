@@ -43,7 +43,7 @@ protected:
     void start();
 
 public:
-    explicit RemoteService(int argc, char **argv);
+    explicit RemoteService(int argc, char **argv, const QString& service_name);
     ~RemoteService();
 
 private slots:

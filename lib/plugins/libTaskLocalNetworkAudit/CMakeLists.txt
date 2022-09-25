@@ -57,7 +57,8 @@ target_link_libraries(TaskLocalNetworkAudit
     OpenSSL::SSL
     OpenSSL::Crypto
     snmp++
-    ${UNIX_LINK_OPTION}
+    ${WIN_LIBS}
+    ${UNIX_LIBS}
     )
 
 target_compile_definitions(TaskLocalNetworkAudit PRIVATE LIBTOEXPORT)
