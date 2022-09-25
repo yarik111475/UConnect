@@ -48,7 +48,6 @@ target_link_libraries(USystemService PUBLIC
     Qt5::Core
     Qt5::Network
     Qt5::WebSockets
-    user32
     qtservice
     spdlog
     ${WIN_LIBS}
